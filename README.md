@@ -4,6 +4,8 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 # Contents
 - [Pre-requisites](#prereqs)
 - [Step 1 - Configure SSH Connectivity](#step1)
+- [Step 2 - Install Lightweight Kubernetes (K3S)](#step2)
+- [Step 3 - Install Helm and Deploy Minecraft Chart](#step3)
 
 <hr>
 
@@ -34,6 +36,8 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 
 
 ## Step 1 - Configure SSH Connectivity<a name='step1'></a>
+
+Enabling SSH connectivity will allow us to remotely administer the Raspberry Pi, as well as provide an extra layer of security (aside from turning off SSH). 
 
 1. Create SSH key pair in WSL2.
 
@@ -68,5 +72,47 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 
 ```ssh pi@<RPI4 node IP address>```
 
-Enter *Y* at the prompt to re-add the new host key into your *known_hosts* file. You may be prompted for the user password you configured during the O/S install on the RPI4.
+Enter *Yes* at the prompt to re-add the new host key into your *known_hosts* file. You may be prompted for the user password you configured during the O/S install on the RPI4.
 
+<hr>
+
+
+## Step 2 - Install Lightweight Kubernetes (K3S) and Kubectl<a name='step2'></a>
+
+We will install 
+
+1. Connect to the Raspberry PI server through SSH.
+
+```ssh pi@<RPI4 node IP address>```
+
+2. Install K3S on both your server and working station/PC.
+
+```curl -sfL https://get.k3s.io | sh -```
+
+3. Install Kubectl on the server.
+
+```curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl```
+
+4. We'll need to configure K3S to be able to talk to our cluster. Because we're using a slim version of Kubernetes, we'll need to copy the default K3S configuration file (Kubeconfig) on our working station, to the default Kubernetes configuration path on the server.
+
+```sudo scp /etc/rancher/k3s/k3s.yaml <YOUR_ACCOUNT>@<YOUR_WORKSTATION>:.kube/config```
+
+>**Note:** You will need to edit the file under *~/.kube/config* and replace the current server IP address (127.0.0.1) with the actual local IP address.
+
+5. Create a Minecraft Namespace and Context
+
+To isolate users and pods to a specific entity, we can create a namespace and context, and switch between contexts as required.
+
+```
+kubectl create namespace minecraft
+kubectl config set-context minecraft --namespace=minecraft --user=default --cluster=default
+kubectl config use-context minecraft
+```
+
+<hr>
+
+
+## Step 3 - Install Helm and Deploy Minecraft Chart<a name='step3'></a>
+
+Testing Testing
