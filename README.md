@@ -8,6 +8,11 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 
 ## Prerequisites <a name='prereqs'></a>
 
-1. Install a Linux-based ARM64 operating system onto the Raspberry Pi 4 (RPI4). We use a 64-bit operating system so that the RPI4's computer resources can be more effectively utilized. As of 15 December 2021, a Buster ARM64 image is available, but is still in Beta release. You can find this image [here](https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2021-11-08/). We'll be using this image to host and administer our Minecraft server.
+1. Flash a Linux-based ARM64 operating system image onto an SD card with at least 8Gb of RAM. 
 
-2. 
+>**Note:** We want to use a 64-bit operating system so that the Raspberry Pi 4 (RPI4) computer resources can be more effectively utilized.
+
+As of 15 December 2021, a Bullseye ARM64 image is available, but is still in Beta release. You can find this image [here](https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2021-11-08/). We'll be using this image for our RPI4.
+
+2. Insert the SD card into the RPI4 and boot it up! You may initially be asked some configuration questions before landing in the Operating System desktop for the administrative user.
+
