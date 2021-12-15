@@ -8,11 +8,19 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 
 ## Prerequisites <a name='prereqs'></a>
 
-1. Flash a Linux-based ARM64 operating system image onto an SD card with at least 8Gb of RAM. 
+1. Purchase a SD card with at least 8Gb of capacity. 
 
->**Note:** We want to use a 64-bit operating system so that the Raspberry Pi 4 (RPI4) computer resources can be more effectively utilized.
+    - Ensure you have the means to flash this SD card. I'm using a USB adaptor for SD cards, so that I can plug it into my laptop and configure it in a familiar environment.
 
-As of 15 December 2021, a Bullseye ARM64 image is available, but is still in Beta release. You can find this image [here](https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2021-11-08/). We'll be using this image for our RPI4.
+2. Download the latest Linux-based ARM64 operating system image from the [Official Raspberry Pi website](https://downloads.raspberrypi.org/raspios_arm64/images/raspios_arm64-2021-11-08/).
 
-2. Insert the SD card into the RPI4 and boot it up! You may initially be asked some configuration questions before landing in the Operating System desktop for the administrative user.
+>**Note:** We want to use a 64-bit operating system so that the Raspberry Pi 4 (RPI4) computer resources can be more effectively utilized. While the latest ARM64 images are still in Beta release, the images work very well for our purpose. 
+
+3. Download the Raspberry Pi Imager from the [Official Raspberry Pi website](https://www.raspberrypi.com/software/), and install this on an accessible PC. We will use the imager to write the ARM64 operating system image to our SD card.
+
+4. Insert the SD card into your PC, and use the Raspberry Pi Imager to write the image to the SD card.
+
+5. Insert the SD card into your RPI, and boot it up!
+
+>**Note:** You may receive a number of prompts that require your input to confirm the configurations you want. Things like timezone, keyboard layouts, etc.
 
