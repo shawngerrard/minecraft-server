@@ -3,8 +3,10 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 
 # Contents
 - [Pre-requisites](#prereqs)
+- [Step 1](#step1)
 
 <hr>
+
 
 ## Prerequisites <a name='prereqs'></a>
 
@@ -24,3 +26,7 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 
 >**Note:** During the boot sequence, you may receive a number of prompts that require input to confirm the operating system configurations you want, such as timezone, keyboard layouts, location services, etc.
 
+<hr>
+
+
+## Step 1 <a name='step1'></a>
