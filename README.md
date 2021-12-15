@@ -22,5 +22,5 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 
 5. Insert the SD card into your RPI, and boot it up!
 
->**Note:** You may receive a number of prompts that require your input to confirm the configurations you want. Things like timezone, keyboard layouts, etc.
+>**Note:** During the boot sequence, you may receive a number of prompts that require input to confirm the operating system configurations you want, such as timezone, keyboard layouts, location services, etc.
 
