@@ -83,20 +83,28 @@ We will install
 
 1. Connect to the Raspberry PI server through SSH.
 
-```ssh pi@<RPI4 node IP address>```
+```
+ssh pi@<RPI4 node IP address>
+```
 
 2. Install K3S on both your server and working station/PC.
 
-```curl -sfL https://get.k3s.io | sh -```
+```
+curl -sfL https://get.k3s.io | sh -
+```
 
 3. Install Kubectl on the server.
 
-```curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl```
+```
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+```
 
 4. We'll need to configure K3S to be able to talk to our cluster. Because we're using a slim version of Kubernetes, we'll need to copy the default K3S configuration file (Kubeconfig) on our working station, to the default Kubernetes configuration path on the server.
 
-```sudo scp /etc/rancher/k3s/k3s.yaml <YOUR_ACCOUNT>@<YOUR_WORKSTATION>:.kube/config```
+```
+sudo scp /etc/rancher/k3s/k3s.yaml <YOUR_ACCOUNT>@<YOUR_WORKSTATION>:.kube/config
+```
 
 >**Note:** You will need to edit the file under *~/.kube/config* and replace the current server IP address (127.0.0.1) with the actual local IP address.
 
@@ -115,4 +123,3 @@ kubectl config use-context minecraft
 
 ## Step 3 - Install Helm and Deploy Minecraft Chart<a name='step3'></a>
 
-Testing Testing
