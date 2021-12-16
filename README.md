@@ -7,6 +7,7 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 - [Step 2 - Install Lightweight Kubernetes (K3S)](#step2)
 - [Step 3 - Install Helm and Deploy Minecraft Chart](#step3)
 - [Step 4 - Expose Minecraft Deployment](#step4)
+- [Step 5 - Test connection to the Minecraft Server](#step5)
 
 <hr>
 
@@ -84,8 +85,6 @@ sudo sed -i -e '/^#PermitRootLogin/s/^.*$/PermitRootLogin no/g' /etc/ssh/sshd_co
 sudo sed -i -e 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
 restart ssh
 ```
-
-
 
 <hr>
 
@@ -203,6 +202,13 @@ minecraftServer:
     # loadBalancerSourceRanges: []
     ## Set the externalTrafficPolicy in the Service to either Cluster or Local
     # externalTrafficPolicy: Cluster
+persistence:
+  annotations: {}
+  dataDir:
+    # Set this to false if you don't care to persist state between restarts.
+    enabled: true
+    # existingClaim: nil
+    Size: 2Gi
 EOF
 ```
 
@@ -218,3 +224,23 @@ helm upgrade --install minecraft-server -f minecraft-server.yaml --set rcon.pass
 
 We'll take advantage of the default K3S Traefik install by using a NodePort to get traffic into the K3S cluster.
 
+> It would be better to use "a better" K3S ingress controller - like NGINX or Traefik
+
+```
+kubectl expose deployment minecraft-server-minecraft --type NodePort --name mineccraft-server-nodeport
+kubectl get svc
+```
+
+Check that the ports are bound on the server.
+
+```
+sudo netstat -tulpn
+```
+
+## Step 5 - Test connection to the Minecraft Server<a name='step5'></a>
+
+Obtain the external IP of the server by connecting into it via SSH and running the following command:
+
+```
+curl https://checkip.amazonaws.com
+```
