@@ -6,6 +6,7 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 - [Step 1 - Configure SSH Connectivity](#step1)
 - [Step 2 - Install Lightweight Kubernetes (K3S)](#step2)
 - [Step 3 - Install Helm and Deploy Minecraft Chart](#step3)
+- [Step 4 - Expose Minecraft Deployment](#step4)
 
 <hr>
 
@@ -87,28 +88,36 @@ We will install
 ssh pi@<RPI4 node IP address>
 ```
 
-2. Install K3S on both your server and working station/PC.
+2. Enable CGroup Memory in the RPI for K3S to Utilize
+
+We need to enable cgroup memory on the RPI - refer to [GitHub](https://github.com/k3s-io/k3s/issues/2067).
+
+Reboot the RPI after the memory is enabled.
+
+```
+sudo sed -i '$ s/$/ cgroup_enable=cpuset cgroup_memory=1 cgroup_enable=memory/' /boot/cmdline.txt
+sudo reboot
+```
+
+3. Install K3S on both your server and working station/PC.
 
 ```
 curl -sfL https://get.k3s.io | sh -
 ```
 
-3. Install Kubectl on the server.
+4. Install Kubectl on the server.
 
 ```
 curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 
-4. We'll need to configure K3S to be able to talk to our cluster. Because we're using a slim version of Kubernetes, we'll need to copy the default K3S configuration file (Kubeconfig) on our working station, to the default Kubernetes configuration path on the server.
+5. We'll need to configure K3S to be able to talk to our cluster. Because we're using a slim version of Kubernetes, we'll need to copy the default K3S configuration file (Kubeconfig) on our working station, to the default Kubernetes configuration path on the server.
 
-```
-sudo scp /etc/rancher/k3s/k3s.yaml <YOUR_ACCOUNT>@<YOUR_WORKSTATION>:.kube/config
-```
+You will need to edit the file under */etc/rancher/k3s/k3s.yaml* and replace the current server IP address (127.0.0.1) with the actual local IP address.
 
->**Note:** You will need to edit the file under *~/.kube/config* and replace the current server IP address (127.0.0.1) with the actual local IP address.
 
-5. Create a Minecraft Namespace and Context
+6. Create a Minecraft Namespace and Context
 
 To isolate users and pods to a specific entity, we can create a namespace and context, and switch between contexts as required.
 
@@ -123,3 +132,22 @@ kubectl config use-context minecraft
 
 ## Step 3 - Install Helm and Deploy Minecraft Chart<a name='step3'></a>
 
+1. Install Helm onto the RPI4 server.
+
+```
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+bash get_helm.sh
+```
+
+
+
+
+2. Deploy the Minecraft server Helm Chart.
+
+```
+export HELM_EXPERIMENTAL_OCI=1
+helm repo add minecraft-server-charts https://itzg.github.io/minecraft-server-charts/
+helm upgrade --install minecraft-server -f minecraft-server.yaml --set minecraftServer.eula=true,rcon.password=<YOUR_RCON_PWD> minecraft-server-charts/minecraft
+```
+
+## Step 4 - Expose Minecraft Deployment<a name='step4'></a>
