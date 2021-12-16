@@ -75,6 +75,18 @@ Enabling SSH connectivity will allow us to remotely administer the Raspberry Pi,
 
 Enter *Yes* at the prompt to re-add the new host key into your *known_hosts* file. You may be prompted for the user password you configured during the O/S install on the RPI4.
 
+8. Harden SSH 
+
+We need to disable root login passwords and password authentication.
+
+```
+sudo sed -i -e '/^#PermitRootLogin/s/^.*$/PermitRootLogin no/g' /etc/ssh/sshd_config
+sudo sed -i -e 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
+restart ssh
+```
+
+
+
 <hr>
 
 
