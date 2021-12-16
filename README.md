@@ -124,9 +124,13 @@ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stabl
 sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 ```
 
-5. We'll need to configure K3S to be able to talk to our cluster. Because we're using a slim version of Kubernetes, we'll need to copy the default K3S configuration file (Kubeconfig) on our working station, to the default Kubernetes configuration path on the server.
+5. We'll need to configure K3S to be able to talk to our cluster. Because we're using a slim version of Kubernetes, we'll need to copy the default K3S configuration file (Kubeconfig) on our RPI4 server to our working station.
 
-You will need to edit the file under */etc/rancher/k3s/k3s.yaml* and replace the current server IP address (127.0.0.1) with the actual local IP address.
+You will need to edit the file under */etc/rancher/k3s/k3s.yaml* and replace the current server IP address (127.0.0.1) with the LAN RPI4 IP address.
+
+```
+sudo scp -i ~/.ssh/mandalore-minecraft pi@192.168.0.125:k3s.yaml ~/.kube/config
+```
 
 
 6. Create a Minecraft Namespace and Context
