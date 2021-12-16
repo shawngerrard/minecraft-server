@@ -244,3 +244,9 @@ Obtain the external IP of the server by connecting into it via SSH and running t
 ```
 curl https://checkip.amazonaws.com
 ```
+
+> Ensure you enable port forwarding for traffic on the router using the high-ports bound to the server (not the RCON port), which you can get using `kubectl get svc` and reviewing the RCON port specified in values.YAML.
+
+1. Access the router gateway to update the port forwarding rule to forward traffic from the server port to the server IP.
+
+2. Finally - connect through a Minecraft client to the external IP and port, and enjoy! :-)
