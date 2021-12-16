@@ -126,10 +126,19 @@ sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 
 5. We'll need to configure K3S to be able to talk to our cluster. Because we're using a slim version of Kubernetes, we'll need to copy the default K3S configuration file (Kubeconfig) on our RPI4 server to our working station.
 
-You will need to edit the file under */etc/rancher/k3s/k3s.yaml* and replace the current server IP address (127.0.0.1) with the LAN RPI4 IP address.
+You will need to edit the file under */etc/rancher/k3s/k3s.yaml* on the server, and replace the current server IP address (127.0.0.1) with the LAN RPI4 IP address.
+
+Then, copy the file and change file ownership of the new file.
 
 ```
-sudo scp -i ~/.ssh/mandalore-minecraft pi@192.168.0.125:k3s.yaml ~/.kube/config
+sudo cp /etc/rancher/k3s/k3s.yaml ~/
+sudo chown pi:pi k3s.yaml
+```
+
+Now, we can copy the file from the server to the current workstation.
+
+```
+scp -i ~/.ssh/mandalore-minecraft pi@192.168.0.125:k3s.yaml ~/.kube/config
 ```
 
 
@@ -148,22 +157,64 @@ kubectl config use-context minecraft
 
 ## Step 3 - Install Helm and Deploy Minecraft Chart<a name='step3'></a>
 
-1. Install Helm onto the RPI4 server.
+1. Install Helm onto your local workstation server.
 
 ```
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
 bash get_helm.sh
 ```
 
-
-
+2. Create the YAML values file.
+```
+cat > ~/Documents/minecraft-server/minecraft-server.yaml << EOF
+---
+imageTag: latest
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  failureThreshold: 180
+readinessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  failureThreshold: 180
+minecraftServer:
+  eula: true
+  version: latest
+  Difficulty: normal
+  motd: "Welcome to Minecraft on Asterion Pi!"
+  # These settings should help the server run better on underpowered Pis.
+  maxWorldSize: 5000
+  viewDistance: 6
+  maxPlayers: 4
+  ops: SoniCtheDrunKeN
+  #whitelist:
+  #  - SoniCtheDrunKeN
+  rcon:
+    # If you enable this, make SURE to change your password below.
+    enabled: true
+    port: 25575
+    password:
+    existingSecret:
+    secretKey: rcon-password
+    serviceType: ClusterIP
+    ## Set the external port if the rcon serviceType is NodePort
+    nodePort:
+    loadBalancerIP:
+    # loadBalancerSourceRanges: []
+    ## Set the externalTrafficPolicy in the Service to either Cluster or Local
+    # externalTrafficPolicy: Cluster
+EOF
+```
 
 2. Deploy the Minecraft server Helm Chart.
 
 ```
 export HELM_EXPERIMENTAL_OCI=1
 helm repo add minecraft-server-charts https://itzg.github.io/minecraft-server-charts/
-helm upgrade --install minecraft-server -f minecraft-server.yaml --set minecraftServer.eula=true,rcon.password=<YOUR_RCON_PWD> minecraft-server-charts/minecraft
+helm upgrade --install minecraft-server -f minecraft-server.yaml --set rcon.password=<YOUR_RCON_PWD> minecraft-server-charts/minecraft
 ```
 
 ## Step 4 - Expose Minecraft Deployment<a name='step4'></a>
+
+We'll take advantage of the default K3S Traefik install by using a NodePort to get traffic into the K3S cluster.
+
