@@ -167,6 +167,12 @@ bash get_helm.sh
 ```
 cat > ~/Documents/minecraft-server/minecraft-server.yaml << EOF
 ---
+kind: Deployment
+spec:
+  template:
+    metadata:
+      annotations:
+        timestamp: "{{ randAlphaNum 5 | quote }}"
 imageTag: latest
 livenessProbe:
   initialDelaySeconds: 60
@@ -184,7 +190,7 @@ minecraftServer:
   # These settings should help the server run better on underpowered Pis.
   maxWorldSize: 5000
   viewDistance: 6
-  maxPlayers: 4
+  maxPlayers: 8
   ops: SoniCtheDrunKeN
   #whitelist:
   #  - SoniCtheDrunKeN
