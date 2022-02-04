@@ -8,6 +8,8 @@ The Asterion Pi Minecraft Server uses a Raspberry Pi 4 to run a Minecraft server
 - [Step 3 - Install Helm and Deploy Minecraft Chart](#step3)
 - [Step 4 - Expose Minecraft Deployment](#step4)
 - [Step 5 - Test connection to the Minecraft Server](#step5)
+- [Stopping the cluster](#stop)
+
 
 <hr>
 
@@ -256,3 +258,19 @@ curl https://checkip.amazonaws.com
 1. Access the router gateway to update the port forwarding rule to forward traffic from the server port to the server IP.
 
 2. Finally - connect through a Minecraft client to the external IP and port, and enjoy! :-)
+
+
+## Stopping the cluster for node maintenance<a name='stop'></a>
+
+
+In order to stop and clean-up the cluster, perhaps in the event that we need to perform maintenance on the node, we need to conduct a number of steps.
+
+1. Cordon the node, which will stop Kubernetes from scheduling and creating replacement pods in the cordoned node. 
+
+```sudo k3s kubectl cordon <node name>```
+
+2. Drain the node of all its pods.
+
+> **Please note:** The node cannot drain any pods that are managed by a DaemonSet (essentially kube controller pods) or use local storage. The command below takes these two factors into account, so be sure to back up any local files.
+
+```sudo k3s kubectl drain <node name> --ignore-daemonsets --delete-emptydir-data```
