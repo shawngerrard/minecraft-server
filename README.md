@@ -45,11 +45,11 @@ Enabling SSH connectivity will allow us to remotely administer the Raspberry Pi,
 
 1. Create SSH key pair in WSL2.
 
-```ssh-keygen -t rsa -b 4096 -f ~/.ssh/minecraft-server -C "Minecraft Server key"```
+```ssh-keygen -t rsa -b 4096 -f ~/.ssh/<key name> -C "RPI key"```
 
 2. Start the SSH agent on the client PC and add the identity to the key ring.
 
-```eval $(ssh-agent -s) && ssh-add ~/.ssh/minecraft-server```
+```eval $(ssh-agent -s) && ssh-add ~/.ssh/<key name>```
 
 3. Once the Raspberry Pi has booted up, check that the SSH service is running.
 
